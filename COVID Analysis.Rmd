@@ -672,5 +672,5 @@ The following are the takeaways as of `r max(daily$date_of_interest)`.
 
 
 ```{r, echo=FALSE}
-save.image(file = "COVID Analysis.RData")
+save.image(file = "R_object.RData")
 ```
