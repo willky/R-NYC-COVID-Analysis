@@ -18,7 +18,7 @@ spacing: double
 </style>
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, 
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
                       fig.width = 10, fig.height = 5, fig.align = "center")
 
 library(tidyverse)
@@ -47,12 +47,12 @@ Photo Credit: Nino Marcutti/Alamy Stock
 
 ## 1. Introduction
 
-This is an on-going analysis aimed at tracking the impact of Covid-19 on the City of New York (NYC). Using data provided by City officials, this work provides insights into the daily and total number of COVID infections, hospitalizations and deaths in the City as a whole. Additionally, it looks at COVID cases among various demographics to determine which ones have been impacted the most.
+This is an on-going analysis aimed at tracking the impact of COVID-19 on the City of New York (NYC). Using publicly available data provided by the City, this work provides insights into the daily and total number of COVID infections, hospitalizations and deaths in the City. Additionally, it looks at COVID-19 cases among various demographics to determine which ones have been impacted the most.
 
 
 ## 2. Data {.tabset .tabset-fade .tabset-pills}
 
-The NYC Department of Health and Mental Hygiene (DOHMH) publishes an open source COVID-19 database on its Github repository. The database, which is updated daily, contains numerous data sets that provides details about COVID cases, testing and vaccinations. However, this work only uses three data sets from the repository: `data-by-day`, `data-by-group` and `data-by-modzcta`. Below are brief descriptions of each of the data sets.
+The NYC Department of Health and Mental Hygiene (DOHMH) publishes an open source COVID-19 database on its Github repository. The database, which is updated daily, contains numerous tables that provides details about COVID cases, testing and vaccinations. This analyses uses uses three data sets from the repository, namely `data-by-day`, `data-by-group` and `data-by-modzcta`. Below are brief descriptions of each of the data sets.
 
 + **`data-by-day`:** Provides a daily summary of all Covid cases, hospitalizations and deaths  that happened in the City as a whole, and by borough.
 
@@ -60,8 +60,10 @@ The NYC Department of Health and Mental Hygiene (DOHMH) publishes an open source
 
 + **`data-by-modzcta`:** Gives a breakdown of aggregate cases by neighborhood and modified zip code. This data can be used to map COVID cases and deaths by neighborhood when combined with the MODZCTA shape files (can be downloaded from DOHMH's Github or NYC Open Data Portal).
 
+In addition to the three highlighted above, the analysis also extracts and uses shapefile data from the City's Open Data Portal to map COVID cases in neighborhoods.
 
-Now, let's extract and load the three COVID data set needed from the DOHMH GitHub page and the shape files from the NYC Open Data Portal.
+
+Now, let us extract and load the aforementioned data sets (from DOHMH GitHub page and NYC Open Data Portal) and get them ready for the analysis.
 
 ```{r}
 ## Daily Data
@@ -106,7 +108,7 @@ detach(package:plyr, unload = TRUE)
 ```
 
 
-Let's take a look at the first few rows of each data set.
+The tables below show the first few rows of each data set.
 
 ### Data-by-Day
 ```{r}
@@ -125,31 +127,51 @@ head(modzcta)
 
 ## 3. Data Examination
 
+In this section, I examine the data sets to identify what needs to cleaned.
+
 ### 3.1. Data Structure and Summary {.tabset .tabset-fade .tabset-pills}
 
-A quick look at the structure and summary of the three data sets to determine what needs to be cleaned.
+The tables below depict the structure and summary of the three COVID data sets. 
 
 #### Daily Data
 
 ```{r}
-print(dfSummary(daily), method = 'render')
+daily %>% 
+  skim() %>% 
+  kbl() %>% 
+  kable_classic_2(c("striped", "hovered"), html_font = "Calibri") %>% 
+  scroll_box(width = "100%", height = "300px")
 ```
+
 
 #### Group Data
 
 ```{r}
-print(dfSummary(group), method = 'render')
+group %>% 
+  skim() %>% 
+  kbl() %>% 
+  kable_classic_2(c("striped", "hovered"), html_font = "Calibri") %>% 
+  scroll_box(width = "100%", height = "300px")
 ```
+
 
 #### Modzcta Data
 
 ```{r}
-print(dfSummary(modzcta), method = 'render')
+modzcta %>% 
+  skim() %>% 
+  kbl() %>% 
+  kable_classic_2(c("striped", "hovered"), html_font = "Calibri") %>% 
+  scroll_box(width = "100%", height = "300px")
 ```
+
+#
+From the tables above, the only things that needs to be addressed is missing values in the `group` data.
+
 
 ### 3.2. Missing Data {.tabset .tabset-fade .tabset-pills}
 
-From the data summary tables, only the 'group' data has missing values. Let's check again to make sure.
+From the data summary tables, only the 'group' data has missing values. Let us check again to make sure.
 
 #### Daily Data
 
@@ -172,36 +194,23 @@ modzcta %>% missmap(main = "Missing vs. Observed Values")
 ```
 
 #
-Only 4.4% of the group data are missing, all of which are coming from the age category. In Section 4.1, I re-code the sub-categories under the age group and that addresses the missing data issue.
+As depicted by the charts, about four percent of the observations in the `group` data are missing. After further review, it is clear that all the missing observations are from the `Age group` category under `group` column. In Section 4.1, I re-code the age groups under the  `subgroup`.
 
 ## 4. Data Wrangling
 
 ### 4.1. Consolidate '0-17' age group
 
-Under the `Age group` category, the `0-17` group has three sub-groupings (0-4, 5-12, 12-17). However, the `DEATH_RATE` & `DEATH_COUNT` statistics are only provided for the `0-17` age group. Besides `DEATH_RATE` & `DEATH_COUNT`, the other Covid statistics are only provided for the age sub-categories and not the main `0-17` category. This creates missing values in the rows containing the age categories as shown below.
+Under the `Age group` category, the `0-17` group has three sub-groupings (0-4, 5-12, 12-17). However, the `DEATH_RATE` & `DEATH_COUNT` statistics are only provided for the `0-17` age group. Besides `DEATH_RATE` and `DEATH_COUNT`, the other COVID statistics are only provided for the age sub-categories and not the main `0-17` category. This creates missing values in the rows containing the age categories as shown below.
 
 ```{r}
 group %>% slice(1:6)
 ```
 
-Let's clean this up by merging all the numbers under the main category (0-17) and remove the three sub-categories.
-
-First let's save the sub-categories under "0-17" - we may need them later.
-
-```{r}
-age_sub_categories <- group %>% 
-  filter(subgroup %in% c("0-4", "5-12", "13-17"))
-```
-
-Now, use the `rollsumr` function to add up the three subcategories into the the `0-17` subgroup.
+To handle the missing data, I use the `rollsumr` function in R to aggregate statistics for the three sub-categories (0-4, 5-12, 12-17) under the main category (0-17). The sub-categories are subsequently deleted from the table.
 
 ```{r}
 group[4, c(3:5, 7:10)] <- rollsumr(group[1:3, c(3:5, 7:10)], k=3) 
-```
 
-After that, delete the three subcategories.
-
-```{r}
 group <- group %>% slice(-c(1:3))
 ```
 
@@ -214,7 +223,7 @@ group %>% missmap(main = "Observed vs. Missing Values")
 
 ### 4.2. Clean the `Staten Island` subgroup
 
-In the `group` table, Staten Island is written as `StatenIsland` as shown in the table below.
+In the `group` table, 'Staten Island' is written as `StatenIsland` as shown in the table below.
 
 ```{r}
 group %>% 
@@ -227,7 +236,7 @@ group %>%
                   html_font = "calibri")
 ```
 
-Let's add a white space to separate the two words and check to make sure it worked.
+I clean it by adding a white space to correct the name of the Borough, as show below.
 
 ```{r}
 group <- group %>% 
@@ -249,7 +258,7 @@ group %>%
 
 ### 4.3. Change data types for `date_of_interest`
 
-In the daily data, the `date_of_interest` column is a string variable. Change it to date.
+In the daily data, the `date_of_interest` column is stored as a string variable. I change it to a date variable.
 
 ```{r}
 daily <- daily %>% 
@@ -263,11 +272,11 @@ class(daily$date_of_interest)
 
 ## 5. Analyzing Citywide Impact
 
-This section analyzes and summarizes COVID cases throughout the City.
+This section analyzes the daily and total number of COVID cases in the City as a whole as of `r max(daily$date_of_interest)`.
 
 ### 5.1. Citywide: Total Cases {.tabset .tabset-fade .tabset-pills}
 
-Let's look at the total number of cases, hospitalizations and deaths throughout the five boroughs. 
+As of `r max(daily$date_of_interest)`, approximately 3.2 million COVID infections have been recorded in NYC, with close to 202,000 of those infection leading to hospitalization. Almost 44,300 people have their lives from the COVID-19 in the City.
 
 ```{r}
 group %>% 
@@ -323,10 +332,12 @@ daily %>%
          title = "Daily Citywide Deaths")
 ```
 
+#
+The charts above show that NYC experienced the peak of infection in the beginning of 2022, during the Omicron wave. While there have been three waves in hospitalizations and deaths, most of the hospitalizations and deaths occurred during the initial wave of infections (between March and April of 2020). The availability of vaccines during the Omicron wave helped the number of hospitalizations and deaths around that time.
 
 ## 5.2. Citywide: New Cases
 
-The table below shows the new infections, hospitalizations and deaths recorded on `r max(daily$date_of_interest)` - the latest date we have record for.
+The table below shows the number of new infections, hospitalizations and deaths recorded on `r max(daily$date_of_interest)` - the latest date we have record for.
 
 ```{r}
 daily %>% filter(date_of_interest == max(daily$date_of_interest)) %>% 
@@ -341,15 +352,15 @@ daily %>% filter(date_of_interest == max(daily$date_of_interest)) %>%
 ```
 
 
-## 6. Analyzing Covid Impact by Borough
+## 6. Analyzing COVID Impact by Borough
 
-This section breaks down the daily and total COVID cases by borough.
+This section disaggregates the daily and total number of COVID cases by borough among the five NYC boroughs.
 
 ### 6.1. Total Cases by Borough
 
 The chart below shows the total number of COVID cases by borough. It gives the raw numbers of infections, hospitalizations and deaths since the beginning of the pandemic.
 
-Because these are the raw numbers (and not case count), densely populated boroughs are likely to have higher number of cases. 
+Because these are raw numbers, densely populated boroughs are likely to have higher number of cases. 
 
 ```{r}
 group %>% 
@@ -360,9 +371,9 @@ group %>%
             `2. Hospitalized` = sum(HOSPITALIZED_COUNT),
             `3. Deaths` = sum(DEATH_COUNT)) %>% 
   pivot_longer(cols = 2:4, names_to = "Indicator", values_to = "Case Count") %>% 
-  plot_ly(x = ~ Borough, y = ~`Case Count`, type = 'bar', color = ~Indicator) %>% 
+  plot_ly(x = ~ Borough, y = ~`Case Count`, type = 'bar', color = ~Indicator, colors = "Set2") %>% 
   layout(title = "Total Number of Cases by Borough", barmode = 'stack',
-         xaxis=list(title = ""), yaxis=list(title = ""))
+         xaxis=list(title = ""), yaxis=list(title = "Number of People"))
 ```
 
 
@@ -370,14 +381,14 @@ group %>%
 
 The charts below show the trends in the daily average infections, hospitalizations and deaths per borough.
 
-It appears that Brooklyn and Queens have consistently posted the highest daily average cases.
+It appears that daily infections, hospitalizations and deaths have consistently been highest in Brooklyn and Queen.
 
 #### Average Infections by Borough
 
 ```{r}
 daily %>% 
   plot_ly(x = ~date_of_interest, y = ~BX_CASE_COUNT_7DAY_AVG, 
-          type = 'scatter', mode = 'line', name = 'Bronx') %>% 
+          type = 'scatter', mode = 'line', name = 'Bronx', colors = "Set2") %>% 
   add_trace(x = ~date_of_interest, y= ~BK_CASE_COUNT_7DAY_AVG, 
             type = 'scatter', mode = 'line', name = 'Brookyln') %>% 
   add_trace(x = ~date_of_interest, y= ~MN_CASE_COUNT_7DAY_AVG, 
@@ -436,7 +447,7 @@ daily %>%
 
 The chart shows total hospitalizations and deaths as percent of total infections for each borough.
 
-The table indicates that, even though Brooklyn has the highest number of COVID cases (see section 6.1),  the Bronx has seen the largest share of their cases lead to hospitalizations and deaths. This may be because, while less populated than Brooklyn,  the Bronx has a lot more people with underlying medical conditions that exacerbate the effects of COVID. For example, The Bronx is known to have the highest asthma hospitalization rate in the New York State.^[<https://webbi1.health.ny.gov/SASStoredProcess/guest?_program=/EBI/PHIG/apps/asthma_dashboard/ad_dashboard&p=it&ind_id=ad16>]
+The table indicates that, even though Brooklyn has had the highest number of COVID cases (see section 6.1), the Bronx has seen the largest share of their cases lead to hospitalizations and deaths. This may be because, although less populated than Brooklyn,  the Bronx has a lot more people with underlying medical conditions that exacerbate the effects of COVID. For example, The Bronx is known to have one of the highest asthma hospitalization rate in the New York State.^[<https://webbi1.health.ny.gov/SASStoredProcess/guest?_program=/EBI/PHIG/apps/asthma_dashboard/ad_dashboard&p=it&ind_id=ad16>]
 
 
 ```{r}
@@ -475,14 +486,13 @@ group %>% filter(group == "Borough") %>%
          xaxis=list(title = ""), yaxis=list(title = "Rate (Per 100K)"))
 ```
 
-As we can see, even though Brooklyn has the highest case count (see Section 6.1), Staten Island has the highest number of cases when you adjust for population.
-
-Also, while Brooklyn has the highest count of hospitalizations and deaths, the Bronx has the highest rate of hospitalizations and deaths after adjusting for population.
+The chart above indicates that after adjusting for population, Staten Island has the highest rate of infections while the Bronx has the highest rate of hospitalizations and deaths.
 
 
 ## 7. Analysing by Age Group
 
-This section details how COVID has affected the various age groups in the City. The data set breaks age down into eight categories - `0-17`, `18-24`, `24-34`, `35-44`, `45-54`, `55-64`, `65-74`, and `75+`.
+This section details how COVID has affected the various age groups in the City. The data set breaks down age into eight categories - `0-17`, `18-24`, `24-34`, `35-44`, `45-54`, `55-64`, `65-74`, and `75+`.
+
 
 ### 7.1. Case, Hospitalization and Death Rates {.tabset .tabset-fade .tabset-pills}
 
@@ -539,15 +549,15 @@ group %>%
 ```
 
 #
-The two tables indicate that, while young people (under 45 years) are infected at a higher rate than any other age group, only a small share are hospitalized and they barely any die from the virus. However, seniors, especially those 75 year and over, tend to be hospitalized and die at the highest rate even though they have the lowest infection rates. This is consistent with reports that COVID is much more deadly among seniors.
+The two tables indicate that, while young people (under 45 years) are infected at higher rates than any other age group, only a small share are hospitalized and they barely any die from the virus. However, seniors, especially those 75 year and over, tend to be hospitalized and die at the highest rate even though they have the lowest infection rates. This is consistent with reports that COVID is much more deadly among seniors.
 
 ## 8. Analysis by Race/Ethnicity
 
-This section details how COVID has affected people of different races and ethnicities in the City. The dataset breaks race/ethnicity into eight categories - `Asian/Pacific-Islander`, `Black/African-American`, `Hispani/Latino` and `White`.
+This section details how COVID has affected people of different racial and ethnicity background. The data sets breaks race/ethnicity into four categories - `Asian/Pacific-Islander`, `Black/African-American`, `Hispani/Latino` and `White`.
 
 ### Case, Hospitalization and Death Rates {.tabset .tabset-fade .tabset-pills}
 
-The first tab shows the  infections, hospitalizations and deaths rates (per 100,000) for each race/ethnicity. 
+The first tab shows the infections, hospitalizations and deaths rates (per 100,000) for each race/ethnicity.
 
 The second tab shows hospitalization and death rates as a share of case rates.
 
@@ -606,10 +616,11 @@ In this section, I create some choropleth maps to visualize the infection and de
 First, I merge the `modzcta` shapefile and data frame (into the object `modzcta_merge`) and use that for the mapping.
 
 ```{r}
-modzcta_merge <- merge(modzcta_shp, modzcta, by.x = "modzcta", by.y = "MODIFIED_ZCTA", all = T)
+modzcta_merge <- 
+  merge(modzcta_shp, modzcta, by.x = "modzcta", by.y = "MODIFIED_ZCTA", all = T)
 ```
 
-### Infection Rate (PER 100K) by Neighborhood
+### Infection Rate (per 100K) by Neighborhood
 
 ```{r fig.width = 12, fig.height = 8, fig.align = "center"}
 modzcta_merge %>% 
@@ -651,26 +662,26 @@ modzcta_merge %>%
 
 ## 10. Conclusion
 
-The following are the takeaways as of `r max(daily$date_of_interest)`.
+The following are the trends in observed reported COVID cases in NYC as of `r max(daily$date_of_interest)`.
 
 + Infections peaked in January 2022, during the Omicron wave.
 
 + However, hospitalizations and deaths reached their peaks during the first wave of the pandemic (April 2020). Because of the availability of vaccines, the Omicron wave did not cause as much hospitalization and was not as deadly as the 2020 wave of infections.
 
 + Because of the size of its population, Brooklyn has seen the highest number of infections, hospitalizations and deaths since the beginning of the pandemic compared to the other boroughs.
-  * However, after adjusting for population, Staten Island has had the highest rate of infection (per 100K people), while the Bronx has had the highest hospitalization and death rates.
-  * The Bronx has seen the largest share of all cases lead to hospitalization (7.9 percent) and death (1.5 percent).
+  * However, when you adjust for population, Staten Island has the highest rate of infection (per 100K people), while the Bronx has had the highest rate of hospitalization and death rates.
+  * The Bronx has seen the largest share of all cases lead to hospitalization (8 percent) and death (1.6 percent).
   
 
-+ In terms of age, young people under 45 years have the highest rate of infection. Yet, seniors over 65 years tend to be hospitalized and die at higher rates.
-  * Those over 76 years have seen the largest share of their cases lead to hospitalization (34.6 percent) and deaths (14.1 percent).
++ In terms of age, young people under 45 years have the highest rate of infection. Yet, seniors over 65 years tend to be hospitalized and die at the highest rates.
+  * Those over 76 years have seen the largest share of their cases lead to hospitalization (34.5 percent) and deaths (13.8 percent).
   
 
 + Even though African-Americans have one of the lowest infection rates, they tend to be hospitalized and die at higher rates compared other races/ethnicities. 
-  * African-Americans have seen the largest share of their cases lead to hospitalization (9.6 percent) and deaths (3.4 percent).
+  * African-Americans have seen the largest share of their cases lead to hospitalization (9.6 percent) and deaths (3.3 percent).
 
 
 
 ```{r, echo=FALSE}
-save.image(file = "R_object.RData")
+save.image(file = "COVID.RData")
 ```
