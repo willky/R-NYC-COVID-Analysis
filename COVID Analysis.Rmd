@@ -47,12 +47,16 @@ Photo Credit: Nino Marcutti/Alamy Stock
 
 ## 1. Introduction
 
-This is an on-going analysis aimed at tracking the impact of COVID-19 on the City of New York (NYC). Using publicly available data provided by the City, this work provides insights into the daily and total number of COVID infections, hospitalizations and deaths in the City. Additionally, it analyzes COVID-19 cases among various demographics to determine which ones have been impacted the most.
+In mid-2020, New York City (NYC) became the epicenter of the global COVID-19 pandemic as its residents were forced to shelter in place and economic activity came to a grinding halt. The City Department of Health and Mental Hygiene (DOHMH) tracks and provide data on the number the daily and aggregate number of COVID cases in NYC on its Github repository. However, since DOHMH only provides raw data (in CSV format), it makes it difficult to digest and detect case trends in the city. 
+
+This work seeks to extract, transform and analyze and the daily and aggregate cases reported by DOHMH. It uses visuals to depict trends in  COVID-19 infections, hospitalizations and deaths across the city. It also examines case trends among boroughs, demographics, and neighborhoods to understand which group is being impacted the most by the pandemic.
+
+The analysis will be updated at the beginning of each week as new data become available to allows for continuous monitoring of COVID-19 trends in NYC.
 
 
 ## 2. Data {.tabset .tabset-fade .tabset-pills}
 
-The NYC Department of Health and Mental Hygiene (DOHMH) publishes an open source COVID-19 database on its Github repository. The database, which is updated daily, contains numerous tables that provides details about COVID cases, testing and vaccinations. This analyses uses uses three data sets from the repository, namely `data-by-day`, `data-by-group` and `data-by-modzcta`. Below are brief descriptions of each of the data sets.
+NYC DOHMH publishes an open source COVID-19 database on its Github repository. The database, which is updated daily, contains numerous tables that provides details about COVID cases, testing and vaccinations. This analyses uses uses three data sets from the repository, namely `data-by-day`, `data-by-group` and `data-by-modzcta`. Below are brief descriptions of each of the data sets.
 
 + **`data-by-day`:** Provides a daily summary of all Covid cases, hospitalizations and deaths  that happened in the City as a whole, and by borough.
 
@@ -61,7 +65,6 @@ The NYC Department of Health and Mental Hygiene (DOHMH) publishes an open source
 + **`data-by-modzcta`:** Gives a breakdown of aggregate cases by neighborhood and modified zip code. This data can be used to map COVID cases and deaths by neighborhood when combined with the MODZCTA shape files (can be downloaded from DOHMH's Github or NYC Open Data Portal).
 
 In addition to the three highlighted above, the analysis also extracts and uses shapefile data from the City's Open Data Portal to map COVID cases in neighborhoods.
-
 
 Now, let us extract and load the aforementioned data sets (from DOHMH GitHub page and NYC Open Data Portal) and get them ready for the analysis.
 
@@ -171,7 +174,7 @@ From the tables above, the only things that needs to be addressed is missing val
 
 ### 3.2. Missing Data {.tabset .tabset-fade .tabset-pills}
 
-From the data summary tables, only the 'group' data has missing values. Let us check again to make sure.
+From the data summary tables, only the `group` data has missing values. Let us check again to make sure.
 
 #### Daily Data
 
@@ -197,6 +200,12 @@ modzcta %>% missmap(main = "Missing vs. Observed Values")
 As depicted by the charts, about four percent of the observations in the `group` data are missing. After further review, it is clear that all the missing observations are from the `Age group` category under `group` column. In Section 4.1, I re-code the age groups under the  `subgroup`.
 
 ## 4. Data Wrangling
+
+To get the ready for the analysis, I proceed to clean and manipulate them by executing the following actions.
+
++ **`group` data:** I combined some of the age categories into one to remove the missing values. I also added corrected borough name from `StateIsland` to `Staten Island`.
+
++ **`daily` data:** I changed the data type of `date-of-interest` variable from character to date.  
 
 ### 4.1. Consolidate '0-17' age group
 
@@ -296,9 +305,10 @@ The charts below show the trends in daily Citywide cases since the beginning of 
 ```{r}
 daily %>% 
   plot_ly(x = ~date_of_interest, y = ~CASE_COUNT, 
-          type = 'bar', name = 'Infections Count') %>% 
+          type = 'bar', name = 'Infections Count', marker = list(color = "5c89c9")) %>% 
   add_trace(X = ~date_of_interest, y = ~CASE_COUNT_7DAY_AVG, 
-            type = 'scatter', mode = 'line', name = '7-Day Avg. Infections') %>%
+            type = 'scatter', mode = 'line', name = '7-Day Avg. Infections',
+            marker = list(color = "#1d3557"), line = list(color = "#1e3557")) %>%
   layout(xaxis = list(title = "Date"),
          yaxis = list(title = "Number of People"),
          title = "Daily Citywide Infections")
@@ -310,9 +320,10 @@ daily %>%
 ```{r}
 daily %>% 
   plot_ly(x = ~date_of_interest, y = ~HOSPITALIZED_COUNT,
-          type = 'bar', name = 'Hosp. Count') %>% 
+          type = 'bar', name = 'Hosp. Count', marker = list(color = "e9d8a6")) %>% 
   add_trace(x = ~date_of_interest, y = ~DEATH_COUNT_7DAY_AVG,
-            type = 'scatter', mode = 'line', name = '7-Day Avg. Hosp.') %>% 
+            type = 'scatter', mode = 'line', name = '7-Day Avg. Hosp.',
+            marker = list(color = "735d1d"), line = list(color = "735d1d")) %>% 
   layout(xaxis = list(title = NULL),
          yaxis = list(title = "No. of Hospitalizations"),
          title = "Daily Citywide Hospitalizations")
@@ -324,16 +335,17 @@ daily %>%
 ```{r}
 daily %>% 
   plot_ly(x = ~date_of_interest, y = ~DEATH_COUNT,
-          type = 'bar', name = 'Death Count') %>% 
+          type = 'bar', name = 'Death Count', marker = list(color = "#f5aaa2")) %>% 
   add_trace(x = ~date_of_interest, y = ~DEATH_COUNT_7DAY_AVG,
-            type = 'scatter', mode = 'line', name = '7-Day Avg. Deaths') %>% 
-  layout(xaxis = list(title = NULL),
+            type = 'scatter', mode = 'line', name = '7-Day Avg. Deaths', 
+            marker = list(color = "#ae2012"), line = list(color = "#ae2012")) %>% 
+  layout(xaxis = list(title = ""), 
          yaxis = list(title = "No. of Deaths"),
          title = "Daily Citywide Deaths")
 ```
 
 #
-The charts above show that NYC experienced the peak of infection in the beginning of 2022, during the Omicron wave. While there have been three waves in hospitalizations and deaths, most of the hospitalizations and deaths occurred during the initial wave of infections (between March and April of 2020). The availability of vaccines during the Omicron wave helped the number of hospitalizations and deaths around that time.
+The charts above show that NYC reached the peak of infection in the beginning of 2022, during the Omicron wave. While there have been three waves in hospitalizations and deaths, most of the hospitalizations and deaths occurred during the initial wave of infections (between March and April of 2020). The availability of vaccines during the Omicron wave appear to have helped reduce the number of hospitalizations and deaths around that time.
 
 ## 5.2. Citywide: New Cases
 
@@ -371,7 +383,7 @@ group %>%
             `2. Hospitalized` = sum(HOSPITALIZED_COUNT),
             `3. Deaths` = sum(DEATH_COUNT)) %>% 
   pivot_longer(cols = 2:4, names_to = "Indicator", values_to = "Case Count") %>% 
-  plot_ly(x = ~ Borough, y = ~`Case Count`, type = 'bar', color = ~Indicator, colors = "Set2") %>% 
+  plot_ly(x = ~ Borough, y = ~`Case Count`, type = 'bar', color = ~Indicator, colors = my_palette) %>% 
   layout(title = "Total Number of Cases by Borough", barmode = 'stack',
          xaxis=list(title = ""), yaxis=list(title = "Number of People"))
 ```
@@ -388,7 +400,7 @@ It appears that daily infections, hospitalizations and deaths have consistently 
 ```{r}
 daily %>% 
   plot_ly(x = ~date_of_interest, y = ~BX_CASE_COUNT_7DAY_AVG, 
-          type = 'scatter', mode = 'line', name = 'Bronx', colors = "Set2") %>% 
+          type = 'scatter', mode = 'line', name = 'Bronx') %>% 
   add_trace(x = ~date_of_interest, y= ~BK_CASE_COUNT_7DAY_AVG, 
             type = 'scatter', mode = 'line', name = 'Brookyln') %>% 
   add_trace(x = ~date_of_interest, y= ~MN_CASE_COUNT_7DAY_AVG, 
@@ -457,8 +469,9 @@ group %>% filter(group == "Borough") %>%
     `Hospitalized as % of Cases` = (sum(HOSPITALIZED_COUNT)/sum(CASE_COUNT))*100,
     `Deaths as % of Cases` = (sum(DEATH_COUNT)/sum(CASE_COUNT))*100
                                      ) %>% 
-plot_ly(x=~subgroup, y=~`Hospitalized as % of Cases`, type = 'bar', name = '% Hospitalized') %>% 
-  add_trace(x=~subgroup, y=~`Deaths as % of Cases`, name = '% Died') %>% 
+plot_ly(x=~subgroup, y=~`Hospitalized as % of Cases`, type = 'bar', name = '% Hospitalized',
+        marker = list(color = "#e9d8a6")) %>% 
+  add_trace(x=~subgroup, y=~`Deaths as % of Cases`, name = '% Died', marker = list(color = "#ae2012")) %>% 
   layout(title = "Share of Infections that Lead to Hopitalizations & Deaths",
          barmode = 'group',
          xaxis = list(title=''), 
@@ -481,7 +494,8 @@ group %>% filter(group == "Borough") %>%
             `2. Hospitalization Rate` = sum(HOSPITALIZED_RATE),
             `3. Death Rate` = sum(DEATH_RATE)) %>%
   pivot_longer(cols = 2:4, names_to = "Indicator", values_to = "Rate (per 100K)") %>% 
-  plot_ly(x = ~ Borough, y = ~`Rate (per 100K)`, type = 'bar', color = ~Indicator) %>% 
+  plot_ly(x = ~ Borough, y = ~`Rate (per 100K)`, type = 'bar', 
+          color = ~Indicator, colors = my_palette) %>% 
   layout(title = "Case Rate by Borough", barmode = 'stack',
          xaxis=list(title = ""), yaxis=list(title = "Rate (Per 100K)"))
 ```
@@ -518,7 +532,7 @@ group %>%
              y = `Rate (per 100K)`,
              fill = `Age Group`), border = "white") +
   geom_bar(position = 'stack', stat = 'identity') +
-  scale_fill_brewer(palette = 4) +
+  scale_fill_manual(values = pal3) +
   scale_y_continuous(label = percent) +
   theme_minimal() +
   labs(x = NULL,
@@ -539,8 +553,9 @@ group %>%
     `Deaths as % of Cases` = (sum(DEATH_COUNT)/sum(CASE_COUNT))*100
             ) %>% 
   plot_ly(x = ~`Age Group`, y = ~`Hospitalized as % of Cases`, type = 'bar', 
-          name = '% Hospitalized') %>% 
-  add_trace(x = ~`Age Group`, y = ~`Deaths as % of Cases`, name = '% Died') %>% 
+          name = '% Hospitalized', marker = list(color = "#e9d8a6")) %>% 
+  add_trace(x = ~`Age Group`, y = ~`Deaths as % of Cases`, name = '% Died',
+            marker = list(color = "#ae2012")) %>% 
   layout(title = "Share of Infections that Lead to Hopitalizations & Deaths",
          barmode = 'group',
          xaxis = list(title='Age Group'), 
@@ -564,6 +579,8 @@ The second tab shows hospitalization and death rates as a share of case rates.
 #### Case, Hospitalization and Death Rates 
 
 ```{r}
+library(MetBrewer)
+
 group %>% 
   filter(group == "Race") %>% 
   group_by(subgroup) %>% 
@@ -578,7 +595,7 @@ pivot_longer(cols = 2:4,
              y = `Race/Ethnicity`,
              fill = `Rate (per 100K)`)) +
   geom_tile() +
-  scale_fill_viridis_c(option = "G",alpha = .7, begin = 0) +
+  scale_fill_gradientn(colors = met.brewer("Hokusai1", type = "continuous")) +
   theme_minimal() +
   labs(x = NULL, y= NULL, title = "Case Rate (per 100K) by Race/Ethnicity")
 ```
@@ -596,8 +613,9 @@ group %>%
     `Deaths as % of Cases` = (sum(DEATH_RATE)/sum(CASE_RATE))*100
             ) %>% 
   plot_ly(x = ~Race, y = ~`Hospitalized as % of Cases`, type = 'bar', 
-          name = '% Hospitalized') %>% 
-  add_trace(x = ~Race, y = ~`Deaths as % of Cases`, name = '% Died') %>% 
+          name = '% Hospitalized', marker = list(color = "#e9d8a6")) %>% 
+  add_trace(x = ~Race, y = ~`Deaths as % of Cases`, name = '% Died',
+            marker = list(color = "#ae2012")) %>% 
   layout(title = "Share of Infections that Lead to Hopitalizations & Deaths",
          barmode = 'group',
          xaxis = list(title = ""), 
@@ -628,9 +646,9 @@ modzcta_merge %>%
   geom_sf(aes(fill = COVID_CASE_RATE),
             color = "white",
             lwd = 0.2) +
-    scale_fill_viridis_c(
+    scale_fill_gradientn(
       name = "Infection Rate (per 100K)",
-      option = "G"
+      colors = met.brewer("Pillement", type = "continuous")
     ) +
   theme_void() +
   theme(plot.title.position = 'plot', 
@@ -648,9 +666,9 @@ modzcta_merge %>%
   geom_sf(aes(fill = COVID_DEATH_RATE),
             color = "white",
             lwd = 0.2) +
-    scale_fill_viridis_c(
+    scale_fill_gradientn(
       name = "Death Rate (per 100K)",
-      option = "G"
+      colors = met.brewer("OKeeffe2", type = "continuous")
     ) +
   theme_void() +
   theme(plot.title.position = 'plot', 
