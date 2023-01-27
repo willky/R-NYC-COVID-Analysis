@@ -1,0 +1,8 @@
+"0","group %>% "
+"0","  filter(group == ""Citywide"") %>% "
+"0","  summarise(`Total Infections` = sum(CASE_COUNT),"
+"0","            `Total Hospitalizations` = sum(HOSPITALIZED_COUNT),"
+"0","            `Total Deaths` = sum(DEATH_COUNT)) %>% "
+"0","  kbl(align = ""lcr"","
+"0","      format.args = list(big.mark = "","")) %>% "
+"0","  kable_classic_2()"

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+<script src="lib/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="lib/kePrint-0.0.1/kePrint.js"></script>
+<link href="lib/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+</head>
+<body>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class=" lightable-classic-2 lightable-striped" style="font-family: Calibri; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> skim_type </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> skim_variable </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> n_missing </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> complete_rate </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> character.min </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> character.max </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> character.empty </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> character.n_unique </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> character.whitespace </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> numeric.mean </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> numeric.sd </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> numeric.p0 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> numeric.p25 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> numeric.p50 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> numeric.p75 </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;"> numeric.p100 </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;"> numeric.hist </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> character </td>
+   <td style="text-align:left;"> group </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> character </td>
+   <td style="text-align:left;"> subgroup </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1.0000000 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 27 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:left;"> NA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> CONFIRMED_CASE_RATE </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9629630 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 30503.3977 </td>
+   <td style="text-align:right;"> 4679.7023 </td>
+   <td style="text-align:right;"> 19004.50 </td>
+   <td style="text-align:right;"> 27864.062 </td>
+   <td style="text-align:right;"> 30666.865 </td>
+   <td style="text-align:right;"> 33052.327 </td>
+   <td style="text-align:right;"> 39665.81 </td>
+   <td style="text-align:left;"> ▁▃▇▅▃ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> CASE_RATE </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9629630 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 36444.4442 </td>
+   <td style="text-align:right;"> 5691.9720 </td>
+   <td style="text-align:right;"> 22559.28 </td>
+   <td style="text-align:right;"> 33003.207 </td>
+   <td style="text-align:right;"> 36720.275 </td>
+   <td style="text-align:right;"> 39326.058 </td>
+   <td style="text-align:right;"> 47018.65 </td>
+   <td style="text-align:left;"> ▁▃▇▅▃ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> HOSPITALIZED_RATE </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9629630 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 2437.4304 </td>
+   <td style="text-align:right;"> 1997.9331 </td>
+   <td style="text-align:right;"> 241.72 </td>
+   <td style="text-align:right;"> 1439.553 </td>
+   <td style="text-align:right;"> 2357.615 </td>
+   <td style="text-align:right;"> 2585.832 </td>
+   <td style="text-align:right;"> 10635.32 </td>
+   <td style="text-align:left;"> ▇▇▁▁▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> DEATH_RATE </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.8888889 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 658.6129 </td>
+   <td style="text-align:right;"> 824.7574 </td>
+   <td style="text-align:right;"> 2.70 </td>
+   <td style="text-align:right;"> 358.265 </td>
+   <td style="text-align:right;"> 542.565 </td>
+   <td style="text-align:right;"> 607.050 </td>
+   <td style="text-align:right;"> 4235.86 </td>
+   <td style="text-align:left;"> ▇▁▁▁▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> CONFIRMED_CASE_COUNT </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9629630 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 592645.0000 </td>
+   <td style="text-align:right;"> 545165.0400 </td>
+   <td style="text-align:right;"> 99530.00 </td>
+   <td style="text-align:right;"> 272624.750 </td>
+   <td style="text-align:right;"> 435353.000 </td>
+   <td style="text-align:right;"> 702846.250 </td>
+   <td style="text-align:right;"> 2678752.00 </td>
+   <td style="text-align:left;"> ▇▃▁▁▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> PROBABLE_CASE_COUNT </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9629630 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 115452.8462 </td>
+   <td style="text-align:right;"> 106379.3686 </td>
+   <td style="text-align:right;"> 18617.00 </td>
+   <td style="text-align:right;"> 56596.500 </td>
+   <td style="text-align:right;"> 88915.000 </td>
+   <td style="text-align:right;"> 141340.750 </td>
+   <td style="text-align:right;"> 521560.00 </td>
+   <td style="text-align:left;"> ▇▂▁▁▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> CASE_COUNT </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9629630 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 708097.8462 </td>
+   <td style="text-align:right;"> 651324.5863 </td>
+   <td style="text-align:right;"> 118147.00 </td>
+   <td style="text-align:right;"> 329874.250 </td>
+   <td style="text-align:right;"> 526533.000 </td>
+   <td style="text-align:right;"> 847702.250 </td>
+   <td style="text-align:right;"> 3200312.00 </td>
+   <td style="text-align:left;"> ▇▃▁▁▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> HOSPITALIZED_COUNT </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.9629630 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 46099.4231 </td>
+   <td style="text-align:right;"> 42720.9188 </td>
+   <td style="text-align:right;"> 1665.00 </td>
+   <td style="text-align:right;"> 17391.750 </td>
+   <td style="text-align:right;"> 37600.500 </td>
+   <td style="text-align:right;"> 58816.500 </td>
+   <td style="text-align:right;"> 203792.00 </td>
+   <td style="text-align:left;"> ▇▅▁▁▁ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> numeric </td>
+   <td style="text-align:left;"> DEATH_COUNT </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.8888889 </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> NA </td>
+   <td style="text-align:right;"> 12205.3750 </td>
+   <td style="text-align:right;"> 10682.4942 </td>
+   <td style="text-align:right;"> 46.00 </td>
+   <td style="text-align:right;"> 5244.500 </td>
+   <td style="text-align:right;"> 9365.500 </td>
+   <td style="text-align:right;"> 19642.250 </td>
+   <td style="text-align:right;"> 44585.00 </td>
+   <td style="text-align:left;"> ▇▂▅▁▁ </td>
+  </tr>
+</tbody>
+</table></div> <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [["$","$"]]}})</script><script async src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

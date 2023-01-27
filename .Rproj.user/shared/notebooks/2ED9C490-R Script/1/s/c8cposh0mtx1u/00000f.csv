@@ -1,0 +1,3 @@
+"0","group[4, c(3:5, 7:10)] <- rollsumr(group[1:3, c(3:5, 7:10)], k=3) "
+"0",""
+"0","group <- group %>% slice(-c(1:3))"

@@ -1,0 +1,5 @@
+"0","group %>% "
+"0","  skim() %>% "
+"0","  kbl() %>% "
+"0","  kable_classic_2(c(""striped"", ""hovered""), html_font = ""Calibri"") %>% "
+"0","  scroll_box(width = ""100%"", height = ""300px"")"

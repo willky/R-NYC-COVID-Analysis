@@ -1,0 +1,65 @@
+"0","## Daily Data"
+"0","download.file("
+"0","  ""https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv"", "
+"0","  destfile = ""daily.csv"", method = ""curl"")"
+"2","  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0"
+"2","100  217k  100  217k    0     0  1113k      0 --:--:-- --:--:-- --:--:-"
+"2","- 1129k
+"
+"0","daily <- read.csv(""daily.csv"")"
+"0",""
+"0","## Group Data"
+"0","download.file("
+"0","  ""https://raw.githubusercontent.com/nychealth/coronavirus-data/master/totals/by-group.csv"","
+"0","  destfile = ""group.csv"", method = ""curl"")"
+"2","  % Total    % Receiv"
+"2","ed % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0"
+"2","100  2306  100  2306    0     0  18974      0 --:--:-- --:--:-- --:--:-- 193"
+"2","78
+"
+"0","group <- read.csv(""group.csv"")"
+"0",""
+"0","## Modzcta (Zip Code) Data"
+"0","download.file("
+"0","  ""https://raw.githubusercontent.com/nychealth/coronavirus-data/master/totals/data-by-modzcta.csv"","
+"0","  destfile = ""modzcta.csv"", method = ""curl"")"
+"2","  % Total    %"
+"2"," Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0"
+"2","100 26469  100 26469    0     0   199k      0 --:--:-- --:--:-- --:--:"
+"2","--  203k
+"
+"0","modzcta <- read.csv(""modzcta.csv"")"
+"0",""
+"0",""
+"0","## Shape Files: Create folder to store files, download zip, unzip and load"
+"0","library(plyr)"
+"0",""
+"0","dir <- ""/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Stats/Shape Files"""
+"0",""
+"0","dir.create(""Shape Files"")"
+"0","do.call(file.remove, list(list.files(path = dir, full.names = TRUE)))"
+"1","[1]"
+"1"," TRUE"
+"1"," TRUE"
+"1"," TRUE"
+"1"," TRUE"
+"1"," TRUE"
+"1","
+"
+"0","download.file("
+"0","  ""https://data.cityofnewyork.us/api/geospatial/pri4-ifjk?method=export&format=Shapefile"", "
+"0","  destfile = ""/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Stats/Shape Files/modzcta_zip.zip"")"
+"2","trying URL 'https://data.cityofnewyork.us/api/geospatial/pri4-ifjk?method=export&format=Shapefile'
+"
+"2","downloaded 869 KB
+
+"
+"0","zip <- list.files(path = dir, pattern = ""*.zip"", full.names = T)"
+"0",""
+"0","ldply(.data = zip, .fun = unzip, exdir = dir)"
