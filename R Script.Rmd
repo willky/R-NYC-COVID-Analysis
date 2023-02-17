@@ -51,7 +51,7 @@ In mid-2020, New York City (NYC) became the epicenter of the global COVID-19 pan
 
 This work seeks to extract, transform and analyze and the daily and aggregate cases reported by DOHMH. It uses visuals to depict trends in  COVID-19 infections, hospitalizations and deaths across the city. It also examines case trends among boroughs, demographics, and neighborhoods to understand which group is being impacted the most by the pandemic.
 
-The analysis will be updated at the beginning of each week as new data become available to allows for continuous monitoring of COVID-19 trends in NYC.
+The analysis will be updated at the beginning of each week as new data become available to allow for continuous monitoring of COVID-19 trends in NYC.
 
 
 ## 2. Data {.tabset .tabset-fade .tabset-pills}
