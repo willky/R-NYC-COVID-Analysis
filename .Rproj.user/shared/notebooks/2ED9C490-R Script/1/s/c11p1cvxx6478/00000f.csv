@@ -1,2 +1,0 @@
-"0","modzcta_merge <- "
-"0","  merge(modzcta_shp, modzcta, by.x = ""modzcta"", by.y = ""MODIFIED_ZCTA"", all = T)"
