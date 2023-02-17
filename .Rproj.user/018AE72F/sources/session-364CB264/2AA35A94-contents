@@ -1,0 +1,35 @@
+getwd()
+
+
+library(tidyverse)
+
+# Open all the data
+
+
+
+
+# import the file using read.txt()
+byage <- read.table("./data/BYAGE.TXT", header = TRUE, sep = "|")
+
+bycounty <- read.table("./data/BYAREA_COUNTY.TXT", header = TRUE, sep = "|")
+
+
+# create a vector of file names in the directory with .txt extension
+file_list <- list.files(path = "./data/",
+                        pattern = "\\.TXT")
+
+
+#assuming tab separated values with a header    
+datalist = lapply(file_list, function(x)read.table(x, header=T, sep = "|"))
+
+
+# loop over the vector and read in each file using readLines() or read.table()
+for (file in file_list) {
+  # read in the file as a character vector using read.table()
+  dd <- read.table(file, header = TRUE, sep = "|")
+}
+
+
+# analyze
+
+count(byage, SEX)
