@@ -72,19 +72,19 @@ Now, let us extract and load the aforementioned data sets (from DOHMH GitHub pag
 ## Daily Data
 download.file(
   "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv", 
-  destfile = "daily.csv", method = "curl")
+  destfile = "./data/daily.csv", method = "curl")
 daily <- read.csv("daily.csv")
 
 ## Group Data
 download.file(
   "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/totals/by-group.csv",
-  destfile = "group.csv", method = "curl")
+  destfile = "./data/group.csv", method = "curl")
 group <- read.csv("group.csv")
 
 ## Modzcta (Zip Code) Data
 download.file(
   "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/totals/data-by-modzcta.csv",
-  destfile = "modzcta.csv", method = "curl")
+  destfile = "./data/modzcta.csv", method = "curl")
 modzcta <- read.csv("modzcta.csv")
 
 
