@@ -46,7 +46,7 @@ library(sf)
 Photo Credit: Nino Marcutti/Alamy Stock
 
 ## 1. Introduction
-test
+
 In mid-2020, New York City (NYC) became the epicenter of the global COVID-19 pandemic as its residents were forced to shelter in place and economic activity came to a grinding halt. The City Department of Health and Mental Hygiene (DOHMH) tracks and provide data on the number the daily and aggregate number of COVID cases in NYC on its Github repository. However, since DOHMH only provides raw data (in CSV format), it makes it difficult to digest and detect case trends in the city. 
 
 This work seeks to extract, transform and analyze and the daily and aggregate cases reported by DOHMH. It uses visuals to depict trends in  COVID-19 infections, hospitalizations and deaths across the city. It also examines case trends among boroughs, demographics, and neighborhoods to understand which group is being impacted the most by the pandemic.
