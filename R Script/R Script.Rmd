@@ -42,7 +42,7 @@ library(ggthemes)
 library(sf)
 ```
 
-![Source: www.redbubble.com](/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Stats/cover page image.jpeg){width=100%}
+![Source: www.redbubble.com](/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Analysis/cover page image.jpeg){width=100%}
 Photo Credit: Nino Marcutti/Alamy Stock
 
 ## 1. Introduction
@@ -51,7 +51,7 @@ In mid-2020, New York City (NYC) became the epicenter of the global COVID-19 pan
 
 This work seeks to extract, transform and analyze and the daily and aggregate cases reported by DOHMH. It uses visuals to depict trends in  COVID-19 infections, hospitalizations and deaths across the city. It also examines case trends among boroughs, demographics, and neighborhoods to understand which group is being impacted the most by the pandemic.
 
-The analysis will be updated at the beginning of each week as new data become available to allow for continuous monitoring of COVID-19 trends in NYC.
+The analysis will be updated at the beginning of each week as new data become available to allow for continuous monitoring of COVID-19 trends in NYC. This work is also accompanied by this [dashboard](https://public.tableau.com/app/profile/w.k.8632/viz/NYCCOVID-19Tracker/DailyConfirmedReportings) hosted on Tableau Public.
 
 
 ## 2. Data {.tabset .tabset-fade .tabset-pills}
@@ -72,33 +72,33 @@ Now, let us extract and load the aforementioned data sets (from DOHMH GitHub pag
 ## Daily Data
 download.file(
   "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/trends/data-by-day.csv", 
-  destfile = "./data/daily.csv", method = "curl")
-daily <- read.csv("./data/daily.csv")
+  destfile = "./data/daily.csv")
+daily <- read.csv("/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Analysis/data/daily.csv")
 
 ## Group Data
 download.file(
   "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/totals/by-group.csv",
-  destfile = "./data/group.csv", method = "curl")
-group <- read.csv("./data/group.csv")
+  destfile = "./data/group.csv")
+group <- read.csv("/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Analysis/data/group.csv")
 
 ## Modzcta (Zip Code) Data
 download.file(
   "https://raw.githubusercontent.com/nychealth/coronavirus-data/master/totals/data-by-modzcta.csv",
-  destfile = "./data/modzcta.csv", method = "curl")
-modzcta <- read.csv("./data/modzcta.csv")
+  destfile = "./data/modzcta.csv")
+modzcta <- read.csv("/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Analysis/data/modzcta.csv")
 
 
 ## Shape Files: Create folder to store files, download zip, unzip and load
 library(plyr)
 
-dir <- "/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Stats/Shape Files"
+dir <- "/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Analysis/Shape Files"
 
 dir.create("Shape Files")
 do.call(file.remove, list(list.files(path = dir, full.names = TRUE)))
 
 download.file(
   "https://data.cityofnewyork.us/api/geospatial/pri4-ifjk?method=export&format=Shapefile", 
-  destfile = "/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Stats/Shape Files/modzcta_zip.zip")
+  destfile = "/Users/aly_will_mac/Desktop/OLD PC/WILL/LEARNING/1. ALL PROJECTS/R-NYC-COVID-Analysis/Shape Files/modzcta_zip.zip")
 
 zip <- list.files(path = dir, pattern = "*.zip", full.names = T)
 
@@ -285,7 +285,7 @@ This section analyzes the daily and total number of COVID cases in the City as a
 
 ### 5.1. Citywide: Total Cases {.tabset .tabset-fade .tabset-pills}
 
-As of `r max(daily$date_of_interest)`, approximately 3.2 million COVID infections have been recorded in NYC, with close to 204,000 of those infection leading to hospitalization. Exactly 44,585 people have lost their lives from COVID-19 in the City.
+As of `r max(daily$date_of_interest)`, NYC had recorded approximately a total of 3.23 million COVID cases since the first case was recorded in early 2020. More than 206,400 of those cases have led to hospitalizations, with over 45,000 people losing their lives.
 
 ```{r}
 group %>% 
@@ -370,7 +370,7 @@ This section disaggregates the daily and total number of COVID cases among the f
 
 ### 6.1. Total Cases by Borough
 
-The chart below shows the total number of COVID cases by borough. It gives the raw numbers of infections, hospitalizations and deaths since the beginning of the pandemic. Because we are looking at raw numbers (and not numbers adjusted for population), densely populated boroughs will show more infections, hospitalizations and deaths. 
+The chart below shows the total number of COVID cases by borough. Because we are looking at raw numbers (and not adjusted for population), densely populated boroughs will show more infections, hospitalizations and deaths. In this case, Brooklyn, the most densely populated borough in NYC, has had more infections, hospitalizations and deaths compared to the other four boroughs.
 
 ```{r}
 pal1 <- c("#1e3557", "#e9d8a6", "#ae2012")
@@ -460,7 +460,7 @@ The charts above show that daily infections, hospitalizations and deaths have co
 
 ### 6.3. Share of Infections that Turned into Hospitalizations and Deaths?
 
-The chart below shows total hospitalizations and deaths as percent of total infections for each borough.
+Let us look at the share of infections in each borough that turn in hospitalizations and deaths. This will help us understand which boroughs are having the most severe symptoms from COVID.
 
 
 ```{r}
@@ -486,9 +486,8 @@ The chart above indicates that, even though Brooklyn has had the highest number 
 
 ### 6.4. Which Boroughs Have Been Hit the Hardest? {.tabset .tabset-fade .tabset-pills}
 
-Section 6.1 shows Brooklyn has the highest number of cases, hospitalizations and deaths among all boroughs. This makes sense since Brooklyn is the most populous of the five boroughs. However, to be able to compare boroughs to determine which one has been severely affected, we have to adjust for population. Hence, we use the rates (per 100,000) statistics.
+Section 6.1 shows Brooklyn has the highest number of cases, hospitalizations and deaths among all boroughs. This makes sense since Brooklyn is the most populous of the five boroughs. However, to be able to compare boroughs to determine which one has been severely affected, we have to adjust for population. Hence, let us use the rates (per 100,000) statistics to plot total infections, hospitalizations and deaths.
 
-Below are the infection, hospitalization and death rates (per 100,000) for each borough.
 
 ```{r}
 group %>% filter(group == "Borough") %>% 
@@ -570,14 +569,14 @@ group %>%
 ```
 
 #
-The two tables indicate that, while young people (under 45 years) are infected at higher rates than any other age group, only a small share are hospitalized and they barely any die from the virus. On the other hand, seniors, especially those 75 year and over, tend to be hospitalized and die at the highest rate even though they have the lowest infection rates. This is consistent with reports that COVID is much more deadly among seniors.
+The charts in this section indicate that, while young people (under 45 years) are infected at higher rates than any other age group, only a small share are hospitalized and they barely any die from the virus. On the other hand, seniors, especially those 75 year and over, tend to be hospitalized and die at the highest rate even though they have the lowest infection rates. This is consistent with reports that COVID is much more deadly among seniors.
 
 
 ## 8. Analysis by Race/Ethnicity
 
 This section details how COVID has affected people of different racial and ethnicity background. The data sets breaks race/ethnicity into four categories - `Asian/Pacific-Islander`, `Black/African-American`, `Hispani/Latino` and `White`.
 
-### Case, Hospitalization and Death Rates {.tabset .tabset-fade .tabset-pills}
+### 8.1. Case, Hospitalization and Death Rates {.tabset .tabset-fade .tabset-pills}
 
 The first tab shows the infections, hospitalizations and deaths rates (per 100,000) for each race/ethnicity.
 
@@ -700,8 +699,10 @@ The following are the trends in observed reported COVID cases in NYC as of `r ma
 + Brooklyn and Queens have consistently averaged the highest number of infections, hospitalizations and deaths since the beginning of the pandemic per day.
 
 + In terms of age, young people under 45 years have the highest rate of infection. Yet, seniors over 65 years tend to be hospitalized and die at the highest rates.
-  * Those over 76 years have seen the largest share of their cases lead to hospitalization (34.5 percent) and deaths (13.8 percent).
+  * Those over 76 years have seen the largest share of their cases lead to hospitalization (34.3 percent) and deaths (13.6 percent).
   
 
 + Even though African-Americans have one of the lowest infection rates, they tend to be hospitalized and die at higher rates compared other races/ethnicities. 
-  * African-Americans have seen the largest share of their cases lead to hospitalization (9.6 percent) and deaths (3.3 percent).^[See https://public.tableau.com/app/profile/w.k.8632/viz/NYCCOVID-19Tracker/DailyConfirmedReportings for an interactive dashboard tracking COVID-19 cases in NYC]
+  * African-Americans have seen the largest share of their cases lead to hospitalization (9.6 percent) and deaths (3.3 percent).
+  
+  
